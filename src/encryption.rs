@@ -1,12 +1,12 @@
 extern crate crypto;
-
+extern crate ring;
 use crypto::rsa::{RsaPrivateKey, RsaPublicKey};
 use crypto::symmetriccipher::SymmetricCipherError;
 use crypto::buffer::{ReadBuffer, WriteBuffer, BufferResult};
 use crypto::aes::{cbc_decryptor, cbc_encryptor, KeySize};
 use crypto::blockmodes::NoPadding;
+use std::io::Write;
 
-// RSA 加密
 fn rsa_encrypt(public_key: &RsaPublicKey, plaintext: &[u8]) -> Result<Vec<u8>, SymmetricCipherError> {
     let mut ciphertext = vec![0; public_key.size()];
 
@@ -28,7 +28,6 @@ fn rsa_encrypt(public_key: &RsaPublicKey, plaintext: &[u8]) -> Result<Vec<u8>, S
     }
 }
 
-// RSA 解密
 fn rsa_decrypt(private_key: &RsaPrivateKey, ciphertext: &[u8]) -> Result<Vec<u8>, SymmetricCipherError> {
     let mut plaintext = vec![0; private_key.size()];
 
@@ -51,17 +50,16 @@ fn rsa_decrypt(private_key: &RsaPrivateKey, ciphertext: &[u8]) -> Result<Vec<u8>
 }
 
 fn main() {
-    // 生成 RSA 密钥对
     let (private_key, public_key) = RsaPrivateKey::new(512).keypair();
 
     let message = b"Hello, world!";
-    println!("Original message: {:?}", message);
+    println!("Original message: {:?}", std::str::from_utf8(message).unwrap());
 
-    // 使用公钥加密消息
     let encrypted_message = rsa_encrypt(&public_key, message).unwrap();
     println!("Encrypted message: {:?}", encrypted_message);
 
-    // 使用私钥解密消息
     let decrypted_message = rsa_decrypt(&private_key, &encrypted_message).unwrap();
-    println!("Decrypted message: {:?}", decrypted_message);
+    println!("Decrypted message: {:?}", std::str::from_utf8(&decrypted_message).unwrap());
+
+    std::io::stdout().flush().unwrap();
 }

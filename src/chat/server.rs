@@ -1,24 +1,9 @@
 use std::net::{SocketAddr, UdpSocket};
 use std::collections::HashMap;
-const PROJECT_NAME: &str = "BLANE";
-const AUTHOR_NAME: &str = "PURE BLACK";
+
 pub struct Server {
     socket: UdpSocket,
     clients: HashMap<SocketAddr, String>,
-    pub fn handle_new_connection(&mut self, client_addr: SocketAddr, client_name: String) {
-        self.clients.insert(client_addr, client_name);
-        println!("New client connected: {}", client_name);
-    }
-
-    pub fn handle_client_disconnection(&mut self, client_addr: SocketAddr) {
-        if let Some(client_name) = self.clients.remove(&client_addr) {
-            println!("Client disconnected: {}", client_name);
-        }
-    }
-
-    pub fn get_online_clients(&self) -> Vec<String> {
-        self.clients.values().cloned().collect()
-    }
 }
 
 impl Server {
@@ -41,7 +26,6 @@ impl Server {
                     let message = String::from_utf8_lossy(&buffer[..bytes_read]);
                     println!("Received message from {}: {}", src_addr, message);
 
-                    // Broadcast the message to all clients
                     self.broadcast_message(&message)?;
                 }
                 Err(e) => {
@@ -50,9 +34,22 @@ impl Server {
                     }
                 }
             }
-
-            // Other server logic (e.g., handle new connections, manage clients)
         }
+    }
+
+    pub fn handle_new_connection(&mut self, client_addr: SocketAddr, client_name: &str) {
+        self.clients.insert(client_addr, client_name.to_string());
+        println!("New client connected: {}", client_name);
+    }
+
+    pub fn handle_client_disconnection(&mut self, client_addr: SocketAddr) {
+        if let Some(client_name) = self.clients.remove(&client_addr) {
+            println!("Client disconnected: {}", client_name);
+        }
+    }
+
+    pub fn get_online_clients(&self) -> Vec<String> {
+        self.clients.values().cloned().collect()
     }
 
     pub fn broadcast_message(&self, message: &str) -> Result<(), String> {
@@ -64,6 +61,4 @@ impl Server {
 
         Ok(())
     }
-
-    // Other methods
 }

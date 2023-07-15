@@ -6,6 +6,7 @@ version = 3
 name = "BLANE"
 version = "0.1.0"
 dependencies = [
+ "glib-sys",
  "gtk",
  "ring",
  "rust-crypto",

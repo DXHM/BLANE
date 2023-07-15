@@ -1,19 +1,8 @@
 use std::net::UdpSocket;
-const PROJECT_NAME: &str = "BLANE";
-const AUTHOR_NAME: &str = "PURE BLACK";
+
 pub struct Client {
     socket: UdpSocket,
     server_address: String,
-    pub fn receive_message(&self) -> Result<String, String> {
-        let mut buffer = [0u8; 1024];
-        match self.socket.recv_from(&mut buffer) {
-            Ok((bytes_read, _)) => {
-                let message = String::from_utf8_lossy(&buffer[..bytes_read]).to_string();
-                Ok(message)
-            }
-            Err(e) => Err(format!("Failed to receive message: {}", e)),
-        }
-    }
 }
 
 impl Client {
@@ -42,6 +31,17 @@ impl Client {
             .map_err(|e| format!("Failed to send message: {}", e))?;
 
         Ok(())
+    }
+
+    pub fn receive_message(&self) -> Result<String, String> {
+        let mut buffer = [0u8; 1024];
+        match self.socket.recv_from(&mut buffer) {
+            Ok((bytes_read, _)) => {
+                let message = String::from_utf8_lossy(&buffer[..bytes_read]).to_string();
+                Ok(message)
+            }
+            Err(e) => Err(format!("Failed to receive message: {}", e)),
+        }
     }
 
     // Other methods
