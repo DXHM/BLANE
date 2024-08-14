@@ -65,6 +65,8 @@ Your attention and stars are welcomed🥰!
 ## License
 [![gplv3](https://www.gnu.org/graphics/gplv3-or-later.png)](https://www.gnu.org/licenses/gpl-3.0.txt)
 
+## If it useful for you. Please offer me a coffee. ☕
+<img src="https://raw.githubusercontent.com/DXHM/DXHM/main/tipcode.jpg" title="tipcode" height="50%" width="50%">
 
 ## Star History
 
